@@ -21,11 +21,11 @@ class TicketController extends ApiController
      */
     public function index(TicketFilter $filters)
     {
-//        if ($this->include('author')) {
-//            return TicketResource::collection(Ticket::with('user')->paginate());
-//        }
-//        return TicketResource::collection(Ticket::paginate());
-//        dd($filters);
+        //        if ($this->include('author')) {
+        //            return TicketResource::collection(Ticket::with('user')->paginate());
+        //        }
+        //        return TicketResource::collection(Ticket::paginate());
+        //        dd($filters);
 
         return TicketResource::collection(Ticket::filter($filters)->paginate());
     }
@@ -43,14 +43,14 @@ class TicketController extends ApiController
             ]);
         }
 
-        $model = [
-            'title' => $request->input('data.attributes.title'),
-            'description' => $request->input('data.attributes.description'),
-            'status' => $request->input('data.attributes.status'),
-            'user_id' => $request->input('data.relationship.author.data.id'),
-        ];
+        // $model = [
+        //     'title' => $request->input('data.attributes.title'),
+        //     'description' => $request->input('data.attributes.description'),
+        //     'status' => $request->input('data.attributes.status'),
+        //     'user_id' => $request->input('data.relationship.author.data.id'),
+        // ];
 
-        return new TicketResource(Ticket::create($model));
+        return new TicketResource(Ticket::create($request->mappedAttributes()));
     }
 
     /**
@@ -58,10 +58,10 @@ class TicketController extends ApiController
      */
     public function show($ticket_id)
     {
-//        if ($this->include('author')) {
-//            return new TicketResource(Ticket::with('user')->where('id',$ticket->id)->first());
-//        }
-//        return new TicketResource(Ticket::where('id',$ticket->id)->first());
+        //        if ($this->include('author')) {
+        //            return new TicketResource(Ticket::with('user')->where('id',$ticket->id)->first());
+        //        }
+        //        return new TicketResource(Ticket::where('id',$ticket->id)->first());
 
         try {
             $ticket = Ticket::findOrFail($ticket_id);
@@ -82,6 +82,15 @@ class TicketController extends ApiController
     public function update(UpdateTicketRequest $request, $ticket_id)
     {
         // PATCH method
+        try {
+            $ticket = Ticket::findOrFail($ticket_id);
+
+            $ticket->update($request->mappedAttributes());
+
+            return new TicketResource($ticket);
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Ticket cannot be found.', 404);
+        }
     }
 
     /**
@@ -93,21 +102,19 @@ class TicketController extends ApiController
         try {
             $ticket = Ticket::findOrFail($ticket_id);
 
-            $model = [
-                'title' => $request->input('data.attributes.title'),
-                'description' => $request->input('data.attributes.description'),
-                'status' => $request->input('data.attributes.status'),
-                'user_id' => $request->input('data.relationship.author.data.id'),
-            ];
+            // $model = [
+            //     'title' => $request->input('data.attributes.title'),
+            //     'description' => $request->input('data.attributes.description'),
+            //     'status' => $request->input('data.attributes.status'),
+            //     'user_id' => $request->input('data.relationship.author.data.id'),
+            // ];
 
-            $ticket->update($model);
+            $ticket->update($request->mappedAttributes());
 
             return new TicketResource($ticket);
-
         } catch (ModelNotFoundException $exception) {
             return $this->error('Ticket cannot be found.', 404);
         }
-
     }
 
     /**
@@ -119,7 +126,6 @@ class TicketController extends ApiController
             $ticket = Ticket::findOrFail($ticket_id);
             $ticket->delete();
             return $this->ok('Ticket deleted successfully');
-
         } catch (ModelNotFoundException $exception) {
             return $this->error('Ticket cannot be found.', 404);
         }

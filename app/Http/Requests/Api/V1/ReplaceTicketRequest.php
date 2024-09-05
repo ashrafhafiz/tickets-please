@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReplaceTicketRequest extends FormRequest
+class ReplaceTicketRequest extends BaseTicketRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,13 +29,13 @@ class ReplaceTicketRequest extends FormRequest
         ];
     }
 
-    public function messages(): array
-    {
-        return [
-            "data.attributes.title" => 'Title is a required field.',
-            "data.attributes.description" => 'Title is a required field.',
-            "data.attributes.status" => 'Invalid status. Please use A, C, H, or X.',
-            "data.relationship.author.data.id" => 'Title is a required field.'
-        ];
-    }
+    // public function messages(): array
+    // {
+    //     return [
+    //         "data.attributes.title" => 'Title is a required field.',
+    //         "data.attributes.description" => 'Title is a required field.',
+    //         "data.attributes.status" => 'Invalid status. Please use A, C, H, or X.',
+    //         "data.relationship.author.data.id" => 'Title is a required field.'
+    //     ];
+    // }
 }

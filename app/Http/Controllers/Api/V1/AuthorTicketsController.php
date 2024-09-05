@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Filters\Api\V1\TicketFilter;
+use App\Http\Requests\Api\V1\ReplaceTicketRequest;
 use App\Http\Requests\Api\V1\StoreTicketRequest;
+use App\Http\Requests\Api\V1\UpdateTicketRequest;
 use App\Http\Resources\Api\V1\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
@@ -25,20 +27,20 @@ class AuthorTicketsController extends ApiController
      */
     public function store($author_id, StoreTicketRequest $request)
     {
-        $model = [
-            'title' => $request->input('data.attributes.title'),
-            'description' => $request->input('data.attributes.description'),
-            'status' => $request->input('data.attributes.status'),
-            'user_id' => $author_id,
-        ];
+        // $model = [
+        //     'title' => $request->input('data.attributes.title'),
+        //     'description' => $request->input('data.attributes.description'),
+        //     'status' => $request->input('data.attributes.status'),
+        //     'user_id' => $author_id,
+        // ];
 
-        return new TicketResource(Ticket::create($model));
+        return new TicketResource(Ticket::create($request->mappedAttributes()));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($author_id,$ticket_id)
+    public function show($author_id, $ticket_id)
     {
         try {
             $ticket = Ticket::findOrFail($ticket_id);
@@ -52,7 +54,53 @@ class AuthorTicketsController extends ApiController
             }
 
             return $this->error('Ticket is not recognized.', 404);
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Ticket cannot be found.', 404);
+        }
+    }
 
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateTicketRequest $request, $author_id, $ticket_id)
+    {
+        //PATCH method
+        try {
+            $ticket = Ticket::findOrFail($ticket_id);
+
+            if ($ticket->user_id == $author_id) {
+
+                $ticket->update($request->mappedAttributes());
+                return new TicketResource($ticket);
+            }
+            // TODO: Ticket does not  belong to the user
+
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Ticket cannot be found.', 404);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function replace(ReplaceTicketRequest $request, $author_id, $ticket_id)
+    {
+        //PUT method
+        try {
+            $ticket = Ticket::findOrFail($ticket_id);
+
+            if ($ticket->user_id == $author_id) {
+
+                // $model = [
+                //     'title' => $request->input('data.attributes.title'),
+                //     'description' => $request->input('data.attributes.description'),
+                //     'status' => $request->input('data.attributes.status'),
+                //     'user_id' => $request->input('data.relationship.author.data.id'),
+                // ];
+                $ticket->update($request->mappedAttributes());
+                return new TicketResource($ticket);
+            }
+            // TODO: Ticket does not  belong to the user
 
         } catch (ModelNotFoundException $exception) {
             return $this->error('Ticket cannot be found.', 404);
@@ -73,7 +121,6 @@ class AuthorTicketsController extends ApiController
             }
 
             return $this->error('Ticket is not recognized.', 404);
-
         } catch (ModelNotFoundException $exception) {
             return $this->error('Ticket cannot be found.', 404);
         }
