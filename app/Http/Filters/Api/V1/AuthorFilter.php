@@ -8,8 +8,9 @@ class AuthorFilter extends QueryFilter
 {
     protected $sortable = [
         'id',
-        'email',
         'name',
+        'email',
+        'isManager' => 'is_manager',
         'createdAt' => 'created_at',
         'updatedAT' => 'updated_at'
     ];
@@ -23,17 +24,23 @@ class AuthorFilter extends QueryFilter
         return $this->builder->whereIn('id',explode(',',$value));
     }
 
+    public function name($value)
+    {
+        $likeStr = str_replace('*', '%', $value);
+        return $this->builder->where('name', 'like', $likeStr);
+    }
+
     public function email($value)
     {
         $likeStr = str_replace('*', '%', $value);
         return $this->builder->where('email', 'like', $likeStr);
     }
 
-    public function name($value)
+    public function isManager($value)
     {
-        $likeStr = str_replace('*', '%', $value);
-        return $this->builder->where('name', 'like', $likeStr);
+        return $this->builder->where('is_manager', '=', $value);
     }
+
 
     public function createdAt($value)
     {

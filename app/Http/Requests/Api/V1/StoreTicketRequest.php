@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Permissions\Api\V1\Abilities;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTicketRequest extends BaseTicketRequest
@@ -21,24 +22,53 @@ class StoreTicketRequest extends BaseTicketRequest
      */
     public function rules(): array
     {
-//        return [
-//            "data.attributes.title" => 'required|string',
-//            "data.attributes.description" => 'required|string',
-//            "data.attributes.status" => 'required|string|in:A,C,H,X',
-//            "data.relationship.author.data.id" => 'required|integer'
-//        ];
+        //        return [
+        //            "data.attributes.title" => 'required|string',
+        //            "data.attributes.description" => 'required|string',
+        //            "data.attributes.status" => 'required|string|in:A,C,H,X',
+        //            "data.relationship.author.data.id" => 'required|integer'
+        //        ];
+
+        // $rules = [
+        //     "data.attributes.title" => 'required|string',
+        //     "data.attributes.description" => 'required|string',
+        //     "data.attributes.status" => 'required|string|in:A,C,H,X',
+        // ];
+
+        // if ($this->routeIs('tickets.store')) {
+        //     $rules["data.relationship.author.data.id"] = 'required|integer';
+        // }
+
+        // if ($this->routeIs('tickets.store')) {
+        //     if ($user->tokenCan(Abilities::CREATE_OWN_TICKET)) {
+        //         $rules["data.relationship.author.data.id"] .= '|size:' . $user->id;
+        //     }
+        // }
+
+        $authorAttribute = $this->routeIs('tickets.store') ? 'data.relationship.author.data.id' : 'author';
+        $user = $this->user();
 
         $rules = [
             "data.attributes.title" => 'required|string',
             "data.attributes.description" => 'required|string',
             "data.attributes.status" => 'required|string|in:A,C,H,X',
+            $authorAttribute => 'required|integer|exists:users,id|size:' . $user->id,
         ];
 
-        if ($this->routeIs('tickets.store')) {
-            $rules["data.relationship.author.data.id"] = 'required|integer';
+        if ($user->tokenCan(Abilities::CREATE_TICKET)) {
+            $rules[$authorAttribute] .= 'required|integer|exists:users,id';
         }
 
         return $rules;
+    }
+
+    public function prepareForValidation()
+    {
+        if ($this->routeIs('authors.tickets.store')) {
+            $this->merge([
+                'author' => $this->route('author')
+            ]);
+        }
     }
 
     // public function messages(): array

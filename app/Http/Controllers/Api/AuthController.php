@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\LoginUserRequest;
-use App\Http\Requests\Api\RegisterUserRequest;
 use App\Models\User;
 use App\Traits\ApiResponses;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Permissions\Api\V1\Abilities;
+use App\Http\Requests\Api\LoginUserRequest;
+use App\Http\Requests\Api\RegisterUserRequest;
 
 class AuthController extends Controller
 {
@@ -19,7 +20,7 @@ class AuthController extends Controller
     {
         $request->validated($request->all());
 
-        if (!Auth::attempt($request->only('email','password'))) {
+        if (!Auth::attempt($request->only('email', 'password'))) {
             return $this->error('Invalid Credentials', 401);
         }
 
@@ -28,7 +29,8 @@ class AuthController extends Controller
         return $this->ok('Authenticated', [
             'token' => $user->createToken(
                 'API token for ' . $user->email,
-                ['*'],
+                // ['*'],
+                Abilities::getAbilities($user),
                 now()->addMonth()
             )->plainTextToken
         ]);

@@ -12,12 +12,13 @@ abstract class QueryFilter
     protected $request;
 
     protected $sortable = [];
+
     public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
-    public function filter($arr)
+    public function filters($arr)
     {
         foreach($arr as $key=>$value) {
             if(method_exists($this, $key)) {

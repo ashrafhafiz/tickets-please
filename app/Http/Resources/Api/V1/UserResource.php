@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'attributes' => [
                 'name' => $this->name,
                 'email' => $this->email,
+                'isManager' => $this->is_manager,
 //                'emailVerifiedAt' => $this->when(
 //                    $request->routeIs('users.*'),
 //                    $this->email_verified_at

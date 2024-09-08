@@ -4,9 +4,10 @@ namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
 
-trait ApiResponses {
+trait ApiResponses
+{
 
-    protected function ok($message, $data=[])
+    protected function ok($message, $data = [])
     {
         return $this->success($message, $data, 200);
     }
@@ -20,11 +21,26 @@ trait ApiResponses {
         ], $statusCode);
     }
 
-    protected function error($message, $statusCode): JsonResponse
+    protected function error($errors = [], $statusCode = null): JsonResponse
     {
+        if (is_string($errors)) {
+            return response()->json([
+                'message' => $errors,
+                'status' => $statusCode
+            ], $statusCode);
+        }
+
         return response()->json([
+            'errors' => $errors
+        ]);
+    }
+
+    protected function notAuthorized($message)
+    {
+        return $this->error([
+            'status' => 401,
             'message' => $message,
-            'status' => $statusCode
-        ], $statusCode);
+            'source' => '',
+        ]);
     }
 }
