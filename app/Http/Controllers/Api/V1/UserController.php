@@ -21,7 +21,14 @@ class UserController extends ApiController
 {
     protected $userPolicy = UserPolicy::class;
     /**
-     * Display a listing of the resource.
+     * index
+     *
+     * Display a listing of the users.
+     *
+     * @group User Management
+     *
+     * @param AuthorFilter $filters
+     * @return void
      */
     public function index(AuthorFilter $filters)
     {
@@ -29,7 +36,14 @@ class UserController extends ApiController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * store
+     *
+     * Store a newly created user in storage.
+     *
+     * @group User Management
+     *
+     * @param StoreUserRequest $request
+     * @return void
      */
     public function store(StoreUserRequest $request)
     {
@@ -43,7 +57,14 @@ class UserController extends ApiController
     }
 
     /**
-     * Display the specified resource.
+     * show
+     *
+     * Display the specified user.
+     *
+     * @group User Management
+     *
+     * @param User $user
+     * @return void
      */
     public function show(User $user)
     {
@@ -54,7 +75,15 @@ class UserController extends ApiController
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * update
+     *
+     * Update the specified user in storage.
+     *
+     * @group User Management
+     *
+     * @param UpdateUserRequest $request
+     * @param [type] $user_id
+     * @return void
      */
     public function update(UpdateUserRequest $request, $user_id)
     {
@@ -74,7 +103,15 @@ class UserController extends ApiController
     }
 
     /**
+     * replace
+     *
      * Update the specified resource in storage.
+     *
+     * @group User Management
+     *
+     * @param ReplaceUserRequest $request
+     * @param [type] $user_id
+     * @return void
      */
     public function replace(ReplaceUserRequest $request, $user_id)
     {
@@ -95,7 +132,14 @@ class UserController extends ApiController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * destroy
+     *
+     * Remove the specified user from storage.
+     *
+     * @group User Management
+     *
+     * @param [type] $user_id
+     * @return void
      */
     public function destroy($user_id)
     {

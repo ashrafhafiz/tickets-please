@@ -20,7 +20,14 @@ class TicketController extends ApiController
     protected $policyClass = TicketPolicy::class;
 
     /**
-     * Display a listing of the resource.
+     * index
+     *
+     * Get all tickets. Display a listing of the resource.
+     *
+     * @group Ticket Management
+     *
+     * @param TicketFilter $filters
+     * @return void
      */
     public function index(TicketFilter $filters)
     {
@@ -28,7 +35,14 @@ class TicketController extends ApiController
     }
 
     /**
+     * store
+     *
      * Store a newly created resource in storage.
+     *
+     * @group Ticket Management
+     *
+     * @param StoreTicketRequest $request
+     * @return void
      */
     public function store(StoreTicketRequest $request)
     {
@@ -39,7 +53,14 @@ class TicketController extends ApiController
     }
 
     /**
+     * show
+     *
      * Display the specified resource.
+     *
+     * @group Ticket Management
+     *
+     * @param Ticket $ticket
+     * @return void
      */
     public function show(Ticket $ticket)
     {
@@ -51,7 +72,15 @@ class TicketController extends ApiController
     }
 
     /**
+     * update
+     *
      * Update the specified resource in storage.
+     *
+     * @group Ticket Management
+     *
+     * @param UpdateTicketRequest $request
+     * @param Ticket $ticket
+     * @return void
      */
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
@@ -64,7 +93,15 @@ class TicketController extends ApiController
     }
 
     /**
-     * Update the specified resource in storage.
+     * replace
+     *
+     * Replace the specified resource in storage.
+     *
+     * @group Ticket Management
+     *
+     * @param ReplaceTicketRequest $request
+     * @param Ticket $ticket
+     * @return void
      */
     public function replace(ReplaceTicketRequest $request, Ticket $ticket)
     {
@@ -77,7 +114,14 @@ class TicketController extends ApiController
     }
 
     /**
+     * destroy
+     *
      * Remove the specified resource from storage.
+     *
+     * @group Ticket Management
+     *
+     * @param Ticket $ticket
+     * @return void
      */
     public function destroy(Ticket $ticket)
     {

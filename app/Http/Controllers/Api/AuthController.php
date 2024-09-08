@@ -15,7 +15,18 @@ use App\Http\Requests\Api\RegisterUserRequest;
 class AuthController extends Controller
 {
     use ApiResponses;
-    //
+
+    /**
+     * Login
+     *
+     * Authenticates the user and returns the user's API token
+     *
+     * @unauthenticated
+     * @group Authentication
+     *
+     * @param LoginUserRequest $request
+     * @return JsonResponse
+     */
     public function login(LoginUserRequest $request): JsonResponse
     {
         $request->validated($request->all());
@@ -36,11 +47,33 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Register
+     *
+     * Register a new user and returns the user's API token
+     *
+     * @unauthenticated
+     * @group Authentication
+     *
+     * @param RegisterUserRequest $request
+     * @return JsonResponse
+     */
     public function register(RegisterUserRequest $request): JsonResponse
     {
         return $this->ok($request->get('email'));
     }
 
+    /**
+     * Logout
+     *
+     * signs out the user and deletes user's API token
+     *
+     * @group Authentication
+     * @response 200 {}
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
